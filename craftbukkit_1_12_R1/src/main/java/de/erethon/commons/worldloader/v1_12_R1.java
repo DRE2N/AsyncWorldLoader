@@ -97,9 +97,11 @@ class v1_12_R1 extends InternalsProvider {
             converter.convert(name, new IProgressUpdate() {
                 private long b = System.currentTimeMillis();
 
+                @Override
                 public void a(String s) {
                 }
 
+                @Override
                 public void a(int i) {
                     if (System.currentTimeMillis() - this.b >= 1000L) {
                         this.b = System.currentTimeMillis();
@@ -108,6 +110,7 @@ class v1_12_R1 extends InternalsProvider {
 
                 }
 
+                @Override
                 public void c(String s) {
                 }
             });
@@ -152,6 +155,10 @@ class v1_12_R1 extends InternalsProvider {
         internal.setSpawnFlags(true, true);
         console.worlds.add(internal);
 
+        if (generator != null) {
+            internal.getWorld().getPopulators().addAll(generator.getDefaultPopulators(internal.getWorld()));
+        }
+
         pluginManager.callEvent(new WorldInitEvent(internal.getWorld()));
         logger.info("Preparing start region for level " + (console.worlds.size() - 1) + " (Seed: " + internal.getSeed() + ")");
 
@@ -175,7 +182,10 @@ class v1_12_R1 extends InternalsProvider {
                     }
 
                     BlockPosition chunkcoordinates = internal.getSpawn();
-                    internal.getChunkProviderServer().getChunkAt(chunkcoordinates.getX() + j >> 4, chunkcoordinates.getZ() + k >> 4);
+                    try {
+                        internal.getChunkProviderServer().getChunkAt(chunkcoordinates.getX() + j >> 4, chunkcoordinates.getZ() + k >> 4);
+                    } catch (Exception exception) {
+                    }
                 }
             }
         }
